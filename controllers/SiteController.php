@@ -3,14 +3,14 @@
 namespace app\controllers;
 
 use app\components\controllers\WebController;
+use app\forms\ContactForm;
+use app\forms\LoginForm;
 use Yii;
 use yii\captcha\CaptchaAction;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\ErrorAction;
 use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 class SiteController extends WebController
 {
