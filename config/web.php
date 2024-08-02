@@ -1,5 +1,10 @@
 <?php
 
+use app\models\Identity;
+use yii\caching\FileCache;
+use yii\log\FileTarget;
+use yii\symfonymailer\Mailer;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -9,7 +14,7 @@ $config = [
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
     'components' => [
         'request' => [
@@ -17,39 +22,36 @@ $config = [
             'cookieValidationKey' => 'DdHUdb2ICTdRWIFL1V1iFGkoNbNtBvE4',
         ],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => FileCache::class,
         ],
         'user' => [
-            'identityClass' => 'app\models\Identity',
+            'identityClass' => Identity::class,
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
+            'class' => Mailer::class,
             'viewPath' => '@app/mail',
-            // send all mails to a file by default.
             'useFileTransport' => true,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => FileTarget::class,
                     'levels' => ['error', 'warning'],
                 ],
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
