@@ -13,7 +13,7 @@ class Identity extends BaseObject implements IdentityInterface
     public $authKey;
     public $accessToken;
 
-    private static $users = [
+    private static array $users = [
         '100' => [
             'id' => '100',
             'username' => 'admin',
@@ -30,19 +30,12 @@ class Identity extends BaseObject implements IdentityInterface
         ],
     ];
 
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentity($id)
+    public static function findIdentity($id): ?static
     {
         return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): ?static
     {
         foreach (self::$users as $user) {
             if ($user['accessToken'] === $token) {
@@ -53,13 +46,7 @@ class Identity extends BaseObject implements IdentityInterface
         return null;
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
+    public static function findByUsername(string $username): null|static
     {
         foreach (self::$users as $user) {
             if (strcasecmp($user['username'], $username) === 0) {
@@ -70,37 +57,22 @@ class Identity extends BaseObject implements IdentityInterface
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
+    public function getId(): int|string
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey()
+    public function getAuthKey(): ?string
     {
         return $this->authKey;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): bool
     {
         return $this->authKey === $authKey;
     }
 
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
+    public function validatePassword(string $password): bool
     {
         return $this->password === $password;
     }
