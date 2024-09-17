@@ -1,12 +1,14 @@
 <?php
+/**
+ * @var View $this
+ * @var ActiveForm $form
+ * @var LoginForm $model
+ */
 
-/** @var yii\web\View $this */
-/** @var yii\bootstrap5\ActiveForm $form */
-
-/** @var app\models\LoginForm $model */
-
+use app\forms\LoginForm;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
+use yii\web\View;
 
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
@@ -19,7 +21,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div class="col-lg-5">
 
-            <?php $form = ActiveForm::begin([
+            <?php
+            $form = ActiveForm::begin([
                 'id' => 'login-form',
                 'fieldConfig' => [
                     'template' => "{label}\n{input}\n{error}",
@@ -43,7 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
 
-            <?php ActiveForm::end(); ?>
+            <?php
+            ActiveForm::end(); ?>
 
             <div style="color:#999;">
                 You may login with <strong>admin/admin</strong> or <strong>demo/demo</strong>.<br>

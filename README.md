@@ -22,6 +22,7 @@ DIRECTORY STRUCTURE
 
       assets/             contains assets definition
       commands/           contains console commands (controllers)
+      components/         contents system compoinents
       config/             contains application configurations
       controllers/        contains Web controller classes
       mail/               contains view files for e-mails
@@ -114,11 +115,11 @@ Edit the file `config/db.php` with real data, for example:
 
 ```php
 return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
+    'class' => \yii\db\Connection::class,
+    'dsn' => 'mysql:host=127.0.0.1;dbname=yii2template',
     'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
+    'password' => 'password',
+    'charset' => 'utf8mb4',
 ];
 ```
 

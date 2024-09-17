@@ -25,9 +25,9 @@ class HelloController extends Controller
      * @param string $message the message to be echoed.
      * @return int Exit code
      */
-    public function actionIndex($message = 'hello world')
+    public function actionIndex(string $message = 'hello world'): int
     {
-        echo $message . "\n";
+        $this->stdout($message . PHP_EOL);
 
         return ExitCode::OK;
     }
