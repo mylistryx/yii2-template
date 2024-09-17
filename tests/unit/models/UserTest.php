@@ -3,8 +3,9 @@
 namespace tests\unit\models;
 
 use app\models\Identity;
+use Codeception\Test\Unit;
 
-class UserTest extends \Codeception\Test\Unit
+class UserTest extends Unit
 {
     public function testFindUserById()
     {

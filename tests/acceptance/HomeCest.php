@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 class HomeCest
 {
-    public function ensureThatHomePageWorks(AcceptanceTester $I)
+    public function ensureThatHomePageWorks(AcceptanceTester $I): void
     {
         $I->amOnPage(Url::toRoute('/site/index'));        
         $I->see('My Company');

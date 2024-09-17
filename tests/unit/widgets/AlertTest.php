@@ -3,10 +3,15 @@
 namespace tests\unit\widgets;
 
 use app\widgets\Alert;
+use Codeception\Test\Unit;
+use Throwable;
 use Yii;
 
-class AlertTest extends \Codeception\Test\Unit
+class AlertTest extends Unit
 {
+    /**
+     * @throws Throwable
+     */
     public function testSingleErrorMessage()
     {
         $message = 'This is an error message';
@@ -23,6 +28,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testMultipleErrorMessages()
     {
         $firstMessage = 'This is the first error message';
@@ -41,6 +49,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testSingleDangerMessage()
     {
         $message = 'This is a danger message';
@@ -57,6 +68,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testMultipleDangerMessages()
     {
         $firstMessage = 'This is the first danger message';
@@ -75,6 +89,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testSingleSuccessMessage()
     {
         $message = 'This is a success message';
@@ -91,6 +108,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testMultipleSuccessMessages()
     {
         $firstMessage = 'This is the first danger message';
@@ -109,6 +129,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testSingleInfoMessage()
     {
         $message = 'This is an info message';
@@ -125,6 +148,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testMultipleInfoMessages()
     {
         $firstMessage = 'This is the first info message';
@@ -143,6 +169,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testSingleWarningMessage()
     {
         $message = 'This is a warning message';
@@ -159,6 +188,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-info');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testMultipleWarningMessages()
     {
         $firstMessage = 'This is the first warning message';
@@ -177,7 +209,11 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringNotContainsString('alert-info');
     }
 
-    public function testSingleMixedMessages() {
+    /**
+     * @throws Throwable
+     */
+    public function testSingleMixedMessages()
+    {
         $errorMessage = 'This is an error message';
         $dangerMessage = 'This is a danger message';
         $successMessage = 'This is a success message';
@@ -204,7 +240,11 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringContainsString('alert-warning');
     }
 
-    public function testMultipleMixedMessages() {
+    /**
+     * @throws Throwable
+     */
+    public function testMultipleMixedMessages()
+    {
         $firstErrorMessage = 'This is the first error message';
         $secondErrorMessage = 'This is the second error message';
         $firstDangerMessage = 'This is the first danger message';
@@ -241,6 +281,9 @@ class AlertTest extends \Codeception\Test\Unit
         verify($renderingResult)->stringContainsString('alert-warning');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testFlashIntegrity()
     {
         $errorMessage = 'This is an error message';

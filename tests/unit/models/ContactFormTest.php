@@ -3,15 +3,21 @@
 namespace tests\unit\models;
 
 use app\forms\ContactForm;
+use Codeception\Exception\ModuleException;
+use Codeception\Test\Unit;
+use UnitTester;
 use yii\mail\MessageInterface;
 
-class ContactFormTest extends \Codeception\Test\Unit
+class ContactFormTest extends Unit
 {
     /**
-     * @var \UnitTester
+     * @var UnitTester
      */
-    public $tester;
+    public UnitTester $tester;
 
+    /**
+     * @throws ModuleException
+     */
     public function testEmailIsSentOnContact()
     {
         $model = new ContactForm();
@@ -31,7 +37,7 @@ class ContactFormTest extends \Codeception\Test\Unit
 
         /** @var MessageInterface $emailMessage */
         $emailMessage = $this->tester->grabLastSentEmail();
-        verify($emailMessage)->instanceOf('yii\mail\MessageInterface');
+        verify($emailMessage)->instanceOf(MessageInterface::class);
         verify($emailMessage->getTo())->arrayHasKey('admin@example.com');
         verify($emailMessage->getFrom())->arrayHasKey('noreply@example.com');
         verify($emailMessage->getReplyTo())->arrayHasKey('tester@example.com');

@@ -20,8 +20,11 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=8.3.0",
+    "ext-curl": "*",
     "ext-json": "*",
     "ext-xml": "*",
+    "ext-zip": "*",
+    "imangazaliev/didom": "~2.0.0",
     "kartik-v/yii2-widgets": "~3.4.0",
     "ramsey/uuid": "*",
     "yiisoft/yii2": "~2.0.51",
