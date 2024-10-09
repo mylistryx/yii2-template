@@ -2,103 +2,102 @@
 
 namespace app\models;
 
-class Identity extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use app\components\db\CoreActiveRecord;
+use app\enums\IdentityStatus;
+use app\enums\IdentityTokenType;
+use Yii;
+use yii\base\Exception;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\web\IdentityInterface;
+
+/**
+ * @property string $id string(36) UUIDv7
+ * @property string $email string(64)
+ * @property string $password_hash string(64)
+ * @property string $auth_key string(64))
+ * @property-read int $current_status int
+ * @property string $created_at DateTime
+ *
+ * @property IdentityStatus $status
+ */
+class Identity extends CoreActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentity($id)
+    public function behaviors(): array
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return [
+            'TimeStamp' => [
+                'class' => TimestampBehavior::class,
+                'updatedAtAttribute' => false,
+                'value' => date('Y-m-d H:i:s'),
+            ],
+        ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentity($id): ?static
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne($id);
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
+    public static function findIdentityByAccessToken($token, $type = null): ?static
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
+        $accessToken = IdentityToken::findOne([
+            'token' => $token,
+            'token_type' => IdentityTokenType::ACCESS->value,
+        ]);
 
-        return null;
+        return $accessToken?->identity;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey()
+    public function getAuthKey(): string
     {
-        return $this->authKey;
+        return $this->auth_key;
+    }
+
+    public function validateAuthKey($authKey): bool
+    {
+        return $this->auth_key === $authKey;
+    }
+
+    public function validatePassword(string $password): bool
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
     /**
-     * {@inheritdoc}
+     * @throws Exception
      */
-    public function validateAuthKey($authKey)
+    public function setPassword(string $password): void
     {
-        return $this->authKey === $authKey;
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
+    public function getStatus(): IdentityStatus
     {
-        return $this->password === $password;
+        if ($this->isNewRecord) {
+            return IdentityStatus::defaultValue();
+        }
+
+        return IdentityStatus::from($this->current_status);
+    }
+
+    public function setStatus(IdentityStatus $status): void
+    {
+        $this->status = $status->value;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->getStatus() === IdentityStatus::ACTIVE;
+    }
+
+    public function getIdentityTokens(): ActiveQuery
+    {
+        return $this->hasMany(IdentityToken::class, ['identity_id' => 'id']);
     }
 }
