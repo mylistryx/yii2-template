@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\db\CoreActiveRecord;
 use app\enums\IdentityTokenType;
 use app\enums\Tables;
+use Ramsey\Uuid\Uuid;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 
@@ -44,6 +45,7 @@ class IdentityToken extends CoreActiveRecord
             [['token_type'], 'integer'],
             [['token_type', 'in', 'range' => IdentityTokenType::values()]],
             [['identity_id', 'exists', 'targetClass' => Identity::class, 'targetAttribute' => ['identity_id' => 'id']]],
+            ['id', 'default', 'value' => Uuid::uuid7()],
         ];
     }
 

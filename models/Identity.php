@@ -5,6 +5,8 @@ namespace app\models;
 use app\components\db\CoreActiveRecord;
 use app\enums\IdentityStatus;
 use app\enums\IdentityTokenType;
+use Ramsey\Uuid\Rfc4122\UuidV7;
+use Ramsey\Uuid\Uuid;
 use Yii;
 use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
@@ -31,6 +33,20 @@ class Identity extends CoreActiveRecord implements IdentityInterface
                 'updatedAtAttribute' => false,
                 'value' => date('Y-m-d H:i:s'),
             ],
+        ];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function rules(): array
+    {
+        return [
+            [['email', 'password_hash'], 'required'],
+            ['email', 'email'],
+            ['email', 'unique'],
+            ['auth_key', 'default', 'value' => Yii::$app->security->generateRandomString()],
+            ['id', 'default', 'value' => Uuid::uuid7()],
         ];
     }
 
@@ -89,15 +105,5 @@ class Identity extends CoreActiveRecord implements IdentityInterface
     public function setStatus(IdentityStatus $status): void
     {
         $this->status = $status->value;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->getStatus() === IdentityStatus::ACTIVE;
-    }
-
-    public function getIdentityTokens(): ActiveQuery
-    {
-        return $this->hasMany(IdentityToken::class, ['identity_id' => 'id']);
     }
 }
