@@ -9,7 +9,7 @@ use yii\web\User;
 
 class AuthService
 {
-    public function login(User $user, LoginForm $model): void
+    public function login(User $user, LoginForm $model): bool
     {
         if (!$user->isGuest) {
             throw new AlreadyLoggedInException();
@@ -17,14 +17,14 @@ class AuthService
 
         $model->validateOrPanic();
 
-        $user->login(
+        return $user->login(
             $model->identity,
             $model->rememberMe ? Yii::$app->params['identity.rememberMeDuration'] : 0,
         );
     }
 
-    public function logout(User $user): void
+    public function logout(User $user, $destroySession = true): bool
     {
-        $user->logout();
+        return $user->logout($destroySession);
     }
 }

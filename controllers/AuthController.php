@@ -7,6 +7,7 @@ use app\components\exceptions\ValidationException;
 use app\forms\LoginForm;
 use app\services\AuthService;
 use Throwable;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 
@@ -14,8 +15,8 @@ final class AuthController extends WebController
 {
     public function __construct(
         $id,
-        private readonly AuthService $service,
         $module,
+        private readonly AuthService $service,
         $config = [],
     ) {
         parent::__construct($id, $module, $config);
@@ -24,6 +25,16 @@ final class AuthController extends WebController
     public function behaviors(): array
     {
         return [
+            'Access' => [
+                'class' => AccessControl::class,
+                'only' => ['logout'],
+                'rules' => [
+                    'logout' => [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'Verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -34,7 +45,7 @@ final class AuthController extends WebController
         ];
     }
 
-    public function actionLogin(): Response
+    public function actionIndex(): Response
     {
         $model = new LoginForm();
 
@@ -49,7 +60,7 @@ final class AuthController extends WebController
             }
         }
 
-        return $this->render('login', [
+        return $this->render('index', [
             'model' => $model,
         ]);
     }

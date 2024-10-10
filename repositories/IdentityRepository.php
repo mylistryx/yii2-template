@@ -13,7 +13,7 @@ readonly class IdentityRepository
 
     public function findByEmail($email): Identity
     {
-        if (!$entity = Identity::findOne(['email' => $email])) {
+        if (!$entity = Identity::findIdentityByEmail($email)) {
             throw new EntityNotFoundException();
         }
 
@@ -22,7 +22,7 @@ readonly class IdentityRepository
 
     public function findById($id): Identity
     {
-        if (!$entity = Identity::findOne($id)) {
+        if (!$entity = Identity::findIdentity($id)) {
             throw new EntityNotFoundException();
         }
 

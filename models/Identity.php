@@ -22,6 +22,7 @@ use yii\web\IdentityInterface;
  * @property string $created_at DateTime
  *
  * @property IdentityStatus $status
+ * @property-write string $password
  */
 class Identity extends CoreActiveRecord implements IdentityInterface
 {
@@ -45,14 +46,21 @@ class Identity extends CoreActiveRecord implements IdentityInterface
             [['email', 'password_hash'], 'required'],
             ['email', 'email'],
             ['email', 'unique'],
+
             ['auth_key', 'default', 'value' => Yii::$app->security->generateRandomString()],
             ['id', 'default', 'value' => Uuid::uuid7()],
+            ['current_status', 'default', 'value' => IdentityStatus::INACTIVE],
         ];
     }
 
     public static function findIdentity($id): ?static
     {
         return static::findOne($id);
+    }
+
+    public static function findIdentityByEmail(string $email): ?static
+    {
+        return static::findOne(['email' => $email]);
     }
 
     public static function findIdentityByAccessToken($token, $type = null): ?static

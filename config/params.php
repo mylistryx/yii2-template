@@ -8,4 +8,5 @@ return [
     'system.senderName' => 'Net23.ru mailer',
 
     'identity.rememberMeTimeout' => 3600 * 24 * 30,
+    'identity.minPasswordLength' => 6,
 ];

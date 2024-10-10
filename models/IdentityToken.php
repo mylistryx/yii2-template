@@ -6,6 +6,8 @@ use app\components\db\CoreActiveRecord;
 use app\enums\IdentityTokenType;
 use app\enums\Tables;
 use Ramsey\Uuid\Uuid;
+use Yii;
+use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 
@@ -36,17 +38,29 @@ class IdentityToken extends CoreActiveRecord
         ];
     }
 
+    /**
+     * @throws Exception
+     */
     public function rules(): array
     {
         return [
-            [['token', 'type'], 'required'],
-            [['token'], 'string'],
-            [['token'], 'unique'],
-            [['token_type'], 'integer'],
-            [['token_type', 'in', 'range' => IdentityTokenType::values()]],
-            [['identity_id', 'exists', 'targetClass' => Identity::class, 'targetAttribute' => ['identity_id' => 'id']]],
+            ['token_type', 'in', 'range' => IdentityTokenType::values()],
+            ['identity_id', 'required'],
+            ['identity_id', 'exist', 'targetClass' => Identity::class, 'targetAttribute' => 'id'],
             ['id', 'default', 'value' => Uuid::uuid7()],
+            ['token', 'default', 'value' => md5(Yii::$app->security->generateRandomString()) . '_' . time()],
+
         ];
+    }
+
+    public static function findIdentityToken(string $id): ?static
+    {
+        return static::findOne($id);
+    }
+
+    public static function findIdentityTokenByToken(string $token, IdentityTokenType $tokenType): ?static
+    {
+        return static::findOne(['token' => $token, 'token_type' => $tokenType->value]);
     }
 
     public function getIdentity(): ActiveQuery
@@ -59,8 +73,8 @@ class IdentityToken extends CoreActiveRecord
         return IdentityTokenType::from($this->token_type);
     }
 
-    public function setType(IdentityTokenType $type): void
+    public function setType(IdentityTokenType $tokenType): void
     {
-        $this->token_type = $type->value;
+        $this->token_type = $tokenType->value;
     }
 }

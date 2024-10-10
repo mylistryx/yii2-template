@@ -8,12 +8,18 @@ use app\models\IdentityToken;
 
 readonly class IdentityTokenRepository
 {
+    public function findById(string $id): IdentityToken
+    {
+        if (!$entity = IdentityToken::findIdentityToken($id)) {
+            throw new EntityNotFoundException();
+        }
+
+        return $entity;
+    }
+
     public function findByToken(string $token, IdentityTokenType $type): IdentityToken
     {
-        if (!$entity = IdentityToken::findOne([
-            'token' => $token,
-            'type' => $type->value,
-        ])) {
+        if (!$entity = IdentityToken::findIdentityTokenByToken($token, $type)) {
             throw new EntityNotFoundException();
         }
 

@@ -42,6 +42,24 @@ $this->beginBody() ?>
         'brandUrl' => Yii::$app->homeUrl,
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top'],
     ]);
+    ?>
+    <?= Nav::widget([
+        'options' => ['class' => 'navbar-nav'],
+        'items' => [
+            ['label' => 'Home', 'url' => ['/site/index']],
+        ],
+    ]); ?>
+
+    <?= Nav::widget([
+        'options' => ['class' => 'navbar-nav ms-auto'],
+        'items' => [
+            ['label' => 'Signup', 'url' => ['/signup/index'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'Login', 'url' => ['/auth/index'], 'visible' => Yii::$app->user->isGuest],
+            ['label' => 'Logout', 'url' => ['/auth/logout'], 'linkOptions' => ['data' => ['method' => 'post']], 'visible' => !Yii::$app->user->isGuest],
+        ],
+    ]); ?>
+
+    <?php
     NavBar::end();
     ?>
 </header>

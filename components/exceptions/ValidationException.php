@@ -2,19 +2,16 @@
 
 namespace app\components\exceptions;
 
+use app\components\db\CoreActiveRecord;
 use app\components\forms\Form;
 use DomainException;
-use Throwable;
+use yii\helpers\Html;
 
 class ValidationException extends DomainException
 {
     public function __construct(
-        Form $model,
-        ?string $message = null,
-        $code = 0,
-        Throwable $previous = null,
+        Form|CoreActiveRecord $model,
     ) {
-        $model->getErrors();
-        parent::__construct($message, $code, $previous);
+        parent::__construct(Html::errorSummary($model));
     }
 }
