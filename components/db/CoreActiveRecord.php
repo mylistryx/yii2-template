@@ -7,7 +7,7 @@ use yii\db\ActiveRecord;
 
 abstract class CoreActiveRecord extends ActiveRecord
 {
-    public function saveOrPanic(): bool
+    public function saveOrPanic(): static
     {
         if (!$this->validate()) {
             throw new ValidationException($this);
@@ -15,6 +15,6 @@ abstract class CoreActiveRecord extends ActiveRecord
 
         $this->save(false);
 
-        return true;
+        return $this;
     }
 }

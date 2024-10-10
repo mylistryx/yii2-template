@@ -6,6 +6,7 @@ use app\components\db\CoreActiveRecord;
 use app\enums\IdentityTokenType;
 use app\enums\Tables;
 use Ramsey\Uuid\Uuid;
+use Throwable;
 use Yii;
 use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
@@ -17,6 +18,7 @@ use yii\db\ActiveQuery;
  * @property string $token string(64)
  * @property-read int $token_type int
  * @property string $created_at DateTime
+ *
  * @property IdentityTokenType $type
  * @property-read Identity $identity
  */
@@ -53,14 +55,23 @@ class IdentityToken extends CoreActiveRecord
         ];
     }
 
-    public static function findIdentityToken(string $id): ?static
+    public static function create(Identity $identity, IdentityTokenType $tokenType): IdentityToken
     {
-        return static::findOne($id);
+        return (new static([
+            'identity_id' => $identity->id,
+            'token_type' => $tokenType->value,
+        ]))->saveOrPanic();
     }
 
-    public static function findIdentityTokenByToken(string $token, IdentityTokenType $tokenType): ?static
+    public static function clean(Identity $identity, IdentityTokenType $tokenType): void
     {
-        return static::findOne(['token' => $token, 'token_type' => $tokenType->value]);
+        try {
+            static::deleteAll([
+                'identity_id' => $identity->id,
+                'token_type' => $tokenType->value,
+            ]);
+        } catch (Throwable) {
+        }
     }
 
     public function getIdentity(): ActiveQuery

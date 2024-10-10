@@ -4,6 +4,10 @@ namespace app\enums;
 
 use app\components\traits\EnumToArray;
 
+/**
+ * @property-read string $name
+ * @property-read int $value
+ */
 enum IdentityTokenType: int
 {
     use EnumToArray;

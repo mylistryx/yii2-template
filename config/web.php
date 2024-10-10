@@ -5,6 +5,8 @@ use yii\caching\FileCache;
 use yii\debug\Module as DebugModule;
 use yii\gii\Module as GiiModule;
 use yii\log\FileTarget;
+use yii\queue\redis\Queue;
+use yii\redis\Connection;
 use yii\symfonymailer\Mailer;
 
 $params = require __DIR__ . '/params.php';
@@ -50,6 +52,16 @@ $config = [
             ],
         ],
         'db' => $db,
+        'redis' => [
+            'class' => Connection::class,
+            'hostname' => 'localhost',
+            'port' => 6379,
+            'database' => 0,
+        ],
+        'queue' => [
+            'class' => Queue::class,
+            'channel' => 'default',
+        ],
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,

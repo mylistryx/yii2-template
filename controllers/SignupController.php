@@ -6,15 +6,14 @@ use app\components\controllers\WebController;
 use app\components\exceptions\ValidationException;
 use app\forms\SignupForm;
 use app\services\IdentitySignupService;
-use Throwable;
 use yii\web\Response;
 
-class SignupController extends WebController
+final class SignupController extends WebController
 {
     public function __construct(
         $id,
         $module,
-        private readonly IdentitySignupService $service,
+        private readonly IdentitySignupService $identitySignupService,
         $config = [],
     ) {
         parent::__construct($id, $module, $config);
@@ -22,15 +21,14 @@ class SignupController extends WebController
 
     public function actionIndex(): Response
     {
+        $this->checkIsGuest();
         $model = new SignupForm();
 
         if ($model->load($this->post())) {
             try {
-                $this->service->requestSignup($model);
+                $this->identitySignupService->requestSignup($model);
                 return $this->info('Follow email instructions')->goHome();
             } catch (ValidationException $exception) {
-                $this->error($exception->getMessage());
-            } catch (Throwable $exception) {
                 $this->error($exception->getMessage());
             }
         }
@@ -42,12 +40,11 @@ class SignupController extends WebController
 
     public function actionConfirm(string $token): Response
     {
+        $this->checkIsGuest();
         try {
-            $this->service->complete($token);
+            $this->identitySignupService->complete($token);
             $this->info('Your email has been confirmed');
         } catch (ValidationException $exception) {
-            $this->error($exception->getMessage());
-        } catch (Throwable $exception) {
             $this->error($exception->getMessage());
         }
 

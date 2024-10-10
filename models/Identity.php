@@ -5,12 +5,14 @@ namespace app\models;
 use app\components\db\CoreActiveRecord;
 use app\enums\IdentityStatus;
 use app\enums\IdentityTokenType;
+use app\repositories\IdentityRepository;
+use app\repositories\IdentityTokenRepository;
 use Ramsey\Uuid\Rfc4122\UuidV7;
 use Ramsey\Uuid\Uuid;
 use Yii;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveQuery;
 use yii\web\IdentityInterface;
 
 /**
@@ -53,23 +55,32 @@ class Identity extends CoreActiveRecord implements IdentityInterface
         ];
     }
 
+    public static function create(string $email, string $password): self
+    {
+        return (new static([
+            'email' => $email,
+            'password' => $password,
+        ]))->saveOrPanic();
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
     public static function findIdentity($id): ?static
     {
-        return static::findOne($id);
+        /** @var IdentityRepository $repository */
+        $repository = Yii::createObject(IdentityRepository::class);
+        return $repository->findById($id);
     }
 
-    public static function findIdentityByEmail(string $email): ?static
-    {
-        return static::findOne(['email' => $email]);
-    }
-
+    /**
+     * @throws InvalidConfigException
+     */
     public static function findIdentityByAccessToken($token, $type = null): ?static
     {
-        $accessToken = IdentityToken::findOne([
-            'token' => $token,
-            'token_type' => IdentityTokenType::ACCESS->value,
-        ]);
-
+        /** @var IdentityTokenRepository $repository */
+        $repository = Yii::createObject(IdentityTokenRepository::class);
+        $accessToken = $repository->findByToken($token, $type);
         return $accessToken?->identity;
     }
 
@@ -112,6 +123,6 @@ class Identity extends CoreActiveRecord implements IdentityInterface
 
     public function setStatus(IdentityStatus $status): void
     {
-        $this->status = $status->value;
+        $this->current_status = $status->value;
     }
 }

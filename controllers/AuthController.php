@@ -5,8 +5,7 @@ namespace app\controllers;
 use app\components\controllers\WebController;
 use app\components\exceptions\ValidationException;
 use app\forms\LoginForm;
-use app\services\AuthService;
-use Throwable;
+use app\services\IdentityAuthService;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -16,7 +15,7 @@ final class AuthController extends WebController
     public function __construct(
         $id,
         $module,
-        private readonly AuthService $service,
+        private readonly IdentityAuthService $authService,
         $config = [],
     ) {
         parent::__construct($id, $module, $config);
@@ -47,15 +46,14 @@ final class AuthController extends WebController
 
     public function actionIndex(): Response
     {
+        $this->checkIsGuest();
         $model = new LoginForm();
 
         if ($model->load($this->post())) {
             try {
-                $this->service->login($this->user, $model);
+                $this->authService->login($model);
                 return $this->success('Login successful')->goBack();
             } catch (ValidationException $exception) {
-                $this->error($exception->getMessage());
-            } catch (Throwable $exception) {
                 $this->error($exception->getMessage());
             }
         }
@@ -67,12 +65,7 @@ final class AuthController extends WebController
 
     public function actionLogout(): Response
     {
-        try {
-            $this->service->logout($this->user);
-        } catch (Throwable $exception) {
-            $this->error($exception->getMessage());
-        }
-
+        $this->authService->logout();
         return $this->goHome();
     }
 }

@@ -4,6 +4,9 @@ namespace app\forms;
 
 use app\components\forms\Form;
 use app\models\Identity;
+use app\repositories\IdentityRepository;
+use Yii;
+use yii\base\InvalidConfigException;
 
 /**
  * @property-read Identity $identity
@@ -33,8 +36,12 @@ class LoginForm extends Form
         }
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function getIdentity(): ?Identity
     {
-        return Identity::findIdentityByEmail($this->email);
+        $repository = Yii::createObject(IdentityRepository::class);
+        return $repository->findByEmail($this->email);
     }
 }

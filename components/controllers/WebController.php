@@ -14,9 +14,13 @@ use yii\web\User;
  */
 abstract class WebController extends Controller
 {
-    public function getUser(): User
+    public function checkIsGuest(): ?Response
     {
-        return Yii::$app->user;
+        if (!Yii::$app->user->isGuest) {
+            return $this->warning('Already logged in!')->goHome();
+        }
+
+        return null;
     }
 
     public function queryParams(): ?array

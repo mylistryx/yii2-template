@@ -5,7 +5,6 @@ namespace app\repositories;
 use app\components\exceptions\EntityNotFoundException;
 use app\enums\IdentityTokenType;
 use app\models\Identity;
-use app\models\IdentityToken;
 
 readonly class IdentityRepository
 {
@@ -13,7 +12,7 @@ readonly class IdentityRepository
 
     public function findByEmail($email): Identity
     {
-        if (!$entity = Identity::findIdentityByEmail($email)) {
+        if (!$entity = Identity::findOne(['email' => $email])) {
             throw new EntityNotFoundException();
         }
 
@@ -22,7 +21,7 @@ readonly class IdentityRepository
 
     public function findById($id): Identity
     {
-        if (!$entity = Identity::findIdentity($id)) {
+        if (!$entity = Identity::findOne($id)) {
             throw new EntityNotFoundException();
         }
 
@@ -31,20 +30,17 @@ readonly class IdentityRepository
 
     public function findByAccessToken(string $token): Identity
     {
-        $identityToken = $this->identityTokenRepository->findByToken($token, IdentityTokenType::ACCESS);
-        return $identityToken->identity;
+        return $this->identityTokenRepository->findByToken($token, IdentityTokenType::ACCESS)->identity;
     }
 
     public function findByPasswordResetToken(string $token): Identity
     {
-        $identityToken = $this->identityTokenRepository->findByToken($token, IdentityTokenType::PASSWORD_RESET);
-        return $identityToken->identity;
+        return $this->identityTokenRepository->findByToken($token, IdentityTokenType::PASSWORD_RESET)->identity;
     }
 
     public function findByConfirmationToken(string $token): Identity
     {
-        $identityToken = $this->identityTokenRepository->findByToken($token, IdentityTokenType::CONFIRMATION);
-        return $identityToken->identity;
+        return $this->identityTokenRepository->findByToken($token, IdentityTokenType::CONFIRMATION)->identity;
     }
 
 }
