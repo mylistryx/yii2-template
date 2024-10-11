@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'bsVersion' => '5.x',
+
     'app.companyName' => 'Net23.ru',
 
     'system.adminEmail' => 'admin@net23.ru',
@@ -10,4 +12,6 @@ return [
     'identity.rememberMeDuration' => 3600 * 24 * 30,
     'identity.minPasswordLength' => 6,
     'identity.needsEmailConfirmation' => false,
+
+    'linker.shortUrlLength' => 8,
 ];

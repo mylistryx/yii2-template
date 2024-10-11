@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Identity;
+use app\modules\linker\LinkerModule;
 use yii\caching\FileCache;
 use yii\debug\Module as DebugModule;
 use yii\gii\Module as GiiModule;
@@ -20,6 +21,11 @@ $config = [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
+    ],
+    'modules' => [
+        'linker' => [
+            'class' => LinkerModule::class
+        ]
     ],
     'components' => [
         'request' => [

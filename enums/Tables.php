@@ -10,4 +10,6 @@ enum Tables: string
 
     case IDENTITY = 'identity';
     case IDENTITY_TOKEN = 'identity_token';
+    case SHORT_URL = 'short_url';
+    case SHORT_URL_VIEW = 'short_url_view';
 }

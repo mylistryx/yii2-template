@@ -28,7 +28,7 @@ class m241009_120949_identity_token extends CoreMigration
         $this->createIndex(
             'IdentityTokenType',
             Tables::IDENTITY_TOKEN->value,
-            'type',
+            'token_type',
         );
 
         $this->createIndex(
