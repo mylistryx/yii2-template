@@ -12,14 +12,13 @@ class m241009_112031_identity extends CoreMigration
     public function safeUp(): void
     {
         $this->createTable($this->tableName, [
-            'id' => $this->string(36)->notNull(),
+            'id' => $this->uuidPk(),
             'email' => $this->string(64)->notNull()->unique(),
             'password_hash' => $this->string(64)->notNull(),
             'auth_key' => $this->string(64)->notNull()->unique(),
             'current_status' => $this->integer()->notNull(),
+            'created_at' => $this->dateTime()->notNull(),
         ]);
-
-        $this->addPrimaryKey('id', $this->tableName, 'id');
     }
 
     /**

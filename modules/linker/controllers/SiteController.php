@@ -3,12 +3,13 @@
 namespace app\modules\linker\controllers;
 
 use app\components\controllers\WebController;
+use app\components\exceptions\EntityNotFoundException;
 use app\components\exceptions\ValidationException;
 use app\modules\linker\forms\CreateShortUrlForm;
 use app\modules\linker\search\ShortUrlSearch;
-use app\modules\linker\services\LinkerService;
-use Yii;
+use app\modules\linker\services\ShortUrlService;
 use yii\filters\AccessControl;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 final class SiteController extends WebController
@@ -16,7 +17,7 @@ final class SiteController extends WebController
     public function __construct(
         $id,
         $module,
-        private readonly LinkerService $linkerService,
+        private readonly ShortUrlService $shortUrlService,
         $config = [],
     ) {
         parent::__construct($id, $module, $config);
@@ -52,8 +53,8 @@ final class SiteController extends WebController
         $model = new CreateShortUrlForm();
         if ($model->load($this->post())) {
             try {
-                $linkModel = $this->linkerService->create($model);
-                return $this->info('Link created: ' . $linkModel->short_url)->redirect(['index']);
+                $shortUrl = $this->shortUrlService->create($model);
+                return $this->redirect(['view', 'id' => $shortUrl->id]);
             } catch (ValidationException $exception) {
                 $this->error($exception->getMessage());
             }
@@ -63,8 +64,25 @@ final class SiteController extends WebController
         ]);
     }
 
-    public function actionView(string $shortUrl): Response
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function actionView(string $id): Response
     {
-        $this->linkerService->view($shortUrl);
+        try {
+            $entity = $this->shortUrlService->getEntityById($id);
+
+            return $this->render('view', [
+                'entity' => $entity,
+            ]);
+        } catch (EntityNotFoundException) {
+            throw new NotFoundHttpException();
+        }
+    }
+
+    public function actionGo(string $shortUrl): Response
+    {
+        $shortUrlEntity = $this->shortUrlService->go($shortUrl);
+        return $this->redirect($shortUrlEntity->url);
     }
 }

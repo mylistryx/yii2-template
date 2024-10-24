@@ -6,7 +6,7 @@ use app\components\exceptions\EntityNotFoundException;
 use app\modules\linker\models\ShortUrl;
 
 
-class LinkerRepository
+class ShortUrlRepository
 {
     public function findOneById(int $id): ShortUrl
     {
@@ -24,5 +24,10 @@ class LinkerRepository
         }
 
         return $entity;
+    }
+
+    public function save(ShortUrl $entity): void
+    {
+        $entity->saveOrPanic();
     }
 }

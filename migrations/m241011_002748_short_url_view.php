@@ -1,12 +1,12 @@
 <?php
 
+use app\components\migrations\CoreMigration;
 use app\enums\Tables;
-use yii\db\Migration;
 
 /**
  * Class m241011_002748_short_url_view
  */
-class m241011_002748_short_url_view extends Migration
+class m241011_002748_short_url_view extends CoreMigration
 {
     /**
      * {@inheritdoc}
@@ -14,12 +14,11 @@ class m241011_002748_short_url_view extends Migration
     public function safeUp(): void
     {
         $this->createTable(Tables::SHORT_URL_VIEW->value, [
-            'id' => $this->string(36),
-            'short_url_id' => $this->string(36),
+            'id' => $this->uuidPk(),
+            'short_url_id' => $this->uuid()->notNull(),
+            'ip' => $this->string(16)->notNull(),
             'created_at' => $this->dateTime()->notNull(),
         ]);
-
-        $this->addPrimaryKey('id', Tables::SHORT_URL_VIEW->value, 'id');
 
         $this->addForeignKey(
             'FK_ShortUrlView__ShortUrl',

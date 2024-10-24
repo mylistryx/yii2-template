@@ -51,7 +51,7 @@ class Identity extends CoreActiveRecord implements IdentityInterface
 
             ['auth_key', 'default', 'value' => Yii::$app->security->generateRandomString()],
             ['id', 'default', 'value' => Uuid::uuid7()],
-            ['current_status', 'default', 'value' => IdentityStatus::INACTIVE],
+            ['current_status', 'default', 'value' => IdentityStatus::INACTIVE->value],
         ];
     }
 

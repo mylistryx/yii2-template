@@ -12,18 +12,12 @@ class m241009_120949_identity_token extends CoreMigration
     public function safeUp(): void
     {
         $this->createTable(Tables::IDENTITY_TOKEN->value, [
-            'id' => $this->string(36)->notNull(),
-            'identity_id' => $this->string(36)->notNull(),
+            'id' => $this->uuidPk(),
+            'identity_id' => $this->uuid()->notNull(),
             'token' => $this->string(64)->notNull()->unique(),
             'token_type' => $this->integer()->notNull(),
             'created_at' => $this->dateTime()->notNull(),
         ]);
-
-        $this->addPrimaryKey(
-            'id',
-            Tables::IDENTITY_TOKEN->value,
-            'id',
-        );
 
         $this->createIndex(
             'IdentityTokenType',

@@ -1,6 +1,7 @@
 <?php
 
 use yii\caching\FileCache;
+use yii\console\controllers\MigrateController;
 use yii\debug\Module as DebugModule;
 use yii\gii\Module as GiiModule;
 use yii\log\FileTarget;
@@ -31,6 +32,18 @@ $config = [
             ],
         ],
         'db' => $db,
+    ],
+    'controllerMap' => [
+        'migrate' => [
+            'class' => MigrateController::class,
+            'templateFile' => '@app/components/migrations/views/migrate.php',
+        ],
+        'migrate-view' => [
+            'class' => MigrateController::class,
+            'templateFile' => '@app/components/migrations/views/migrateView.php',
+            'migrationTable' => '{{%migration_view}}',
+            'migrationPath' => '@app/migrations-view',
+        ],
     ],
     'params' => $params,
 ];
